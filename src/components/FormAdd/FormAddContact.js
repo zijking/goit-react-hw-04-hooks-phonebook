@@ -1,54 +1,51 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import s from './form.module.css';
 
-class FormAddContact extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
-  onChange = event => {
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
+function FormAddContact({ onSubmit }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const formSubmit = event => {
+    event.preventDefault();
+    onSubmit(name, number);
+    resetForm();
   };
 
   /**Скидання форми */
-  resetForm = () => {
-    this.setState({ name: '', number: '' });
+  const resetForm = () => {
+    setName('');
+    setNumber('');
   };
 
-  formSubmit = event => {
-    // console.log(event);
-    // console.log('Sumit ----');
-    event.preventDefault();
-    this.props.onSubmit(this.state.name, this.state.number);
-    this.resetForm();
-    // console.log(this.state);
+  const onChange = event => {
+    const { name, value } = event.currentTarget;
+    switch (name) {
+      case 'name': {
+        setName(value);
+        break;
+      }
+      case 'number': {
+        setNumber(value);
+        break;
+      }
+      default:
+        return;
+    }
   };
-  render() {
-    return (
-      <form className={s.form} onSubmit={this.formSubmit}>
-        <label className={s.input}>
-          Name:<br></br>
-          <input
-            type="text"
-            onChange={this.onChange}
-            value={this.state.name}
-            name="name"
-          />
-        </label>
-        <label className={s.input}>
-          Number:<br></br>
-          <input
-            type="text"
-            name="number"
-            onChange={this.onChange}
-            value={this.state.number}
-          />
-        </label>
-        <input className="btn" type="submit" value="Add contact" />
-      </form>
-    );
-  }
+
+  return (
+    <form className={s.form} onSubmit={formSubmit}>
+      <label className={s.input}>
+        Name:<br></br>
+        <input type="text" onChange={onChange} value={name} name="name" />
+      </label>
+      <label className={s.input}>
+        Number:<br></br>
+        <input type="text" name="number" onChange={onChange} value={number} />
+      </label>
+      <input className="btn" type="submit" value="Add contact" />
+    </form>
+  );
 }
 
 export default FormAddContact;
